@@ -33,7 +33,7 @@ There are 3 questions and there should be at least 3 separate commits, at least 
 # Methods
 
 <!--Decide on your methods:  In this section explain the approach you will take to attack the issue --- how will you decide on a likely estimate of professor Brownlow's earnings or losses after 637 bets. Also explain how you construct a 95% confidence interval about your estimate of his winnings !-->
-Will solve this problem by resampling. Will set up days of the year, take a random sample of 35, and see if two or more have the same birthday.
+I will solve this problem by resampling. I will set up days of the year, take a random sample of 35, and see if two or more have the same birthday.
   
 ```{r}
 daysYEAR=1:365
@@ -67,10 +67,72 @@ The expected amount of money is `r mean(results)`
 
 # Confidence interval of Brownlows earning
 
+```{r}
+results=vector("numeric")
+for (j in 1:1000){
+bank=0
+for(i in 1:637){
+  class=sample(daysYEAR,35,replace=TRUE)  
+  n=length(unique(class))
+                  if (n == 35)bank=bank-2
+           else bank =bank +1
+}
+results[j]=bank
+}
+ sortRESULTS=sort(results)
+ lcl=sortRESULTS[25]
+ ucl=sortRESULTS[975]
+```
+lower confidence limit= `r lcl`  
+upper confidence limit= `r ucl`
+
+# Fair odds pay off
+```{r}
+bdays=1:365
+results=vector("numeric")
+payout=4.25
+for (j in 1:100){
+bank=0
+for(i in 1:637){
+  class=sample(bdays,size=35,replace=TRUE)  
+  n=length(unique(class))
+                  if (n == 35)bank=bank-payout
+           else bank=bank+1
+}
+results[j]=bank
+}
+ hist(results)
+```
 <!--Explain and display your method of coming up with a 95% confidence interval of  professor Brownlows winnings (or losings)-->
 
+The amount that Dr.J would have to pay in order to make this a fair bet is  `r payout`
+  
+# Number of students for a fair bet
+
+  
+```{r}
+bdays=1:365
+savebank=vector("numeric")
+payout=2
+classSize=28
+for (j in 1:100){
+bank=0
+for(i in 1:637){
+  class=sample(bdays,size=classSize,replace=TRUE)  
+  n=length(unique(class))
+                  if (n == classSize)bank=bank-payout
+           else bank=bank+1
+}
+results[j]=bank
+}
+ hist(results)
+```  
+
+  
+The number of students that would make this a fair bet is `r classSize`
 
 # Discussion and Conclusion
 
 <!--Discussion and conclusion here.  If professor Brownlow is consistantly making or losing money how could he change his payout so that his profits center on zero?  Also discuss what size his class should be in order to have his current scheme balance at zero profit.!-->
 
+ I used resampling in order to answer all three of the questions.
